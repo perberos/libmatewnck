@@ -32,9 +32,10 @@
 
 G_BEGIN_DECLS
 
-#define MATEWNCK_STOCK_DELETE "matewnck-stock-delete"
-#define MATEWNCK_STOCK_MAXIMIZE "matewnck-stock-maximize"
-#define MATEWNCK_STOCK_MINIMIZE "matewnck-stock-minimize"
+#define MATEWNCK_STOCK_DELETE   "window-close"
+#define MATEWNCK_STOCK_RESTORE  "view-restore"
+#define MATEWNCK_STOCK_MAXIMIZE "go-down"
+#define MATEWNCK_STOCK_MINIMIZE "view-fullscreen"
 
 #define MATEWNCK_APP_WINDOW_EVENT_MASK (PropertyChangeMask | StructureNotifyMask)
 

@@ -29,7 +29,6 @@
 #include "util.h"
 #include "xutils.h"
 #include "private.h"
-#include "inlinepixbufs.h"
 #include <gdk/gdkx.h>
 #include <string.h>
 #ifdef HAVE_XRES
@@ -101,16 +100,16 @@ _matewnck_print_resource_usage (MatewnckResourceUsage *usage)
            "\tunknowns      : %d\n"
            "\tpixmap bytes  : %ld\n"
            "\ttotal bytes   : ~%ld\n",
-           usage->n_windows, 
-           usage->n_gcs, 
+           usage->n_windows,
+           usage->n_gcs,
            usage->n_fonts,
-           usage->n_pixmaps,  
+           usage->n_pixmaps,
            usage->n_pictures,
            usage->n_glyphsets,
            usage->n_colormap_entries,
            usage->n_passive_grabs,
            usage->n_cursors,
-           usage->n_other, 
+           usage->n_other,
            usage->pixmap_bytes,
            usage->total_bytes_estimate);
 }
@@ -138,7 +137,7 @@ matewnck_init_resource_usage (GdkDisplay *gdisplay)
 #else
       status = MATEWNCK_EXT_MISSING;
 #endif
-      
+
       g_object_set_data (G_OBJECT (gdisplay),
                          "matewnck-xres-status",
                          GINT_TO_POINTER (status));
@@ -192,11 +191,11 @@ matewnck_xid_read_resource_usage (GdkDisplay        *gdisplay,
    Atom colormap_entry_atom;
    Atom passive_grab_atom;
    Atom cursor_atom;
-   
+
    types = NULL;
    n_types = 0;
    pixmap_bytes = 0;
-   
+
   _matewnck_error_trap_push ();
 
   xdisplay = GDK_DISPLAY_XDISPLAY (gdisplay);
@@ -207,8 +206,8 @@ matewnck_xid_read_resource_usage (GdkDisplay        *gdisplay,
 
    XResQueryClientPixmapBytes (xdisplay,
                                xid, &pixmap_bytes);
-   _matewnck_error_trap_pop ();   
-   
+   _matewnck_error_trap_pop ();
+
    usage->pixmap_bytes = pixmap_bytes;
 
    pixmap_atom = _matewnck_atom_get ("PIXMAP");
@@ -220,12 +219,12 @@ matewnck_xid_read_resource_usage (GdkDisplay        *gdisplay,
    colormap_entry_atom = _matewnck_atom_get ("COLORMAP ENTRY");
    passive_grab_atom = _matewnck_atom_get ("PASSIVE GRAB");
    cursor_atom = _matewnck_atom_get ("CURSOR");
-   
+
    i = 0;
    while (i < n_types)
      {
        int t = types[i].resource_type;
-       
+
        if (t == pixmap_atom)
          usage->n_pixmaps += types[i].count;
        else if (t == window_atom)
@@ -246,7 +245,7 @@ matewnck_xid_read_resource_usage (GdkDisplay        *gdisplay,
          usage->n_cursors += types[i].count;
        else
          usage->n_other += types[i].count;
-       
+
        ++i;
      }
 
@@ -337,12 +336,12 @@ matewnck_find_pid_for_resource_r (Display *xdisplay,
   _matewnck_error_trap_push ();
   qtres = XQueryTree (xdisplay, win_top, &dummy, &dummy,
                       &children, &n_children);
-  err = _matewnck_error_trap_pop ();   
+  err = _matewnck_error_trap_pop ();
 
   if (!qtres || err != Success)
     return;
 
-  for (i = 0; i < n_children; i++) 
+  for (i = 0; i < n_children; i++)
     {
       matewnck_find_pid_for_resource_r (xdisplay, children[i],
                                     match_xid, mask, xid, pid);
@@ -466,7 +465,7 @@ matewnck_pid_read_resource_usage_start_build_cache (GdkDisplay *gdisplay)
   xdisplay = GDK_DISPLAY_XDISPLAY (gdisplay);
 
   _matewnck_error_trap_push ();
-  XResQueryClients (xdisplay, &xres_state.n_clients, &xres_state.clients); 
+  XResQueryClients (xdisplay, &xres_state.n_clients, &xres_state.clients);
   err = _matewnck_error_trap_pop ();
 
   if (err != Success)
@@ -562,7 +561,7 @@ matewnck_pid_read_resource_usage_no_cache (GdkDisplay        *gdisplay,
       MatewnckScreen *screen;
       GList *windows;
       GList *tmp;
-      
+
       screen = matewnck_screen_get (i);
 
       g_assert (screen != NULL);
@@ -583,7 +582,7 @@ matewnck_pid_read_resource_usage_no_cache (GdkDisplay        *gdisplay,
 
           tmp = tmp->next;
         }
-      
+
       ++i;
     }
 }
@@ -769,16 +768,16 @@ _matewnck_stock_icons_init (void)
 
   StockIcon items[] =
   {
-    { MATEWNCK_STOCK_DELETE,   stock_delete_data   },
-    { MATEWNCK_STOCK_MINIMIZE, stock_minimize_data },
-    { MATEWNCK_STOCK_MAXIMIZE, stock_maximize_data }
+    { MATEWNCK_STOCK_DELETE,   NULL },
+    { MATEWNCK_STOCK_MINIMIZE, NULL },
+    { MATEWNCK_STOCK_MAXIMIZE, NULL }
   };
 
   if (done)
     return;
 
   done = TRUE;
-  
+
   factory = gtk_icon_factory_new ();
   gtk_icon_factory_add_default (factory);
 
@@ -794,7 +793,7 @@ _matewnck_stock_icons_init (void)
       icon_set = gtk_icon_set_new_from_pixbuf (pixbuf);
       gtk_icon_factory_add (factory, items[i].stock_id, icon_set);
       gtk_icon_set_unref (icon_set);
-		
+
       g_object_unref (G_OBJECT (pixbuf));
     }
 

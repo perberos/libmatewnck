@@ -33,7 +33,6 @@
 
 #include <glib/gi18n-lib.h>
 #include "selector.h"
-#include "inlinepixbufs.h"
 #include "libmatewnck.h"
 #include "screen.h"
 #include "private.h"
@@ -133,12 +132,15 @@ matewnck_selector_get_screen (MatewnckSelector *selector)
 static GdkPixbuf *
 matewnck_selector_get_default_window_icon (void)
 {
-  static GdkPixbuf *retval = NULL;
+  static GtkImage* image;
+  static GdkPixbuf* retval = NULL;
 
   if (retval)
     return retval;
 
-  retval = gdk_pixbuf_new_from_inline (-1, default_icon_data, FALSE, NULL);
+  //retval = gdk_pixbuf_new_from_inline (-1, default_icon_data, FALSE, NULL);
+  image = gtk_image_new_from_icon_name ("binary", GTK_ICON_SIZE_MENU);
+  retval = gtk_image_get_pixbuf(image);
 
   g_assert (retval);
 
@@ -156,7 +158,7 @@ matewnck_selector_dimm_icon (GdkPixbuf *pixbuf)
   w = gdk_pixbuf_get_width (pixbuf);
   h = gdk_pixbuf_get_height (pixbuf);
 
-  if (gdk_pixbuf_get_has_alpha (pixbuf)) 
+  if (gdk_pixbuf_get_has_alpha (pixbuf))
     dimmed = gdk_pixbuf_copy (pixbuf);
   else
     dimmed = gdk_pixbuf_add_alpha (pixbuf, FALSE, 0, 0, 0);
@@ -220,7 +222,7 @@ matewnck_selector_set_window_icon (MatewnckSelector *selector,
     }
 
   if (window && matewnck_window_is_minimized (window))
-    {      
+    {
       pixbuf = matewnck_selector_dimm_icon (pixbuf);
       freeme2 = pixbuf;
     }
@@ -424,8 +426,8 @@ matewnck_selector_window_state_changed (MatewnckWindow *window,
       gtk_menu_reposition (GTK_MENU (selector->priv->menu));
     }
 
-  if (changed_mask & 
-      (MATEWNCK_WINDOW_STATE_DEMANDS_ATTENTION | MATEWNCK_WINDOW_STATE_URGENT))      
+  if (changed_mask &
+      (MATEWNCK_WINDOW_STATE_DEMANDS_ATTENTION | MATEWNCK_WINDOW_STATE_URGENT))
     {
       if (matewnck_window_or_transient_needs_attention (window))
 	_make_gtk_label_bold (GTK_LABEL (item->label));
@@ -541,7 +543,7 @@ matewnck_selector_get_width (GtkWidget *widget, const char *text)
   return width;
 }
 
-static void  
+static void
 matewnck_selector_drag_begin (GtkWidget          *widget,
 			  GdkDragContext     *context,
 			  MatewnckWindow         *window)
@@ -561,7 +563,7 @@ matewnck_selector_drag_begin (GtkWidget          *widget,
     _matewnck_window_set_as_drag_icon (window, context, widget);
 }
 
-static void  
+static void
 matewnck_selector_drag_data_get (GtkWidget          *widget,
 			     GdkDragContext     *context,
 			     GtkSelectionData   *selection_data,
@@ -569,7 +571,7 @@ matewnck_selector_drag_data_get (GtkWidget          *widget,
 			     guint               time,
 			     MatewnckWindow         *window)
 {
-  gulong xid;    
+  gulong xid;
 
   xid = matewnck_window_get_xid (window);
   gtk_selection_data_set (selection_data,
@@ -626,12 +628,12 @@ matewnck_selector_item_new (MatewnckSelector *selector,
       g_signal_connect_object (item, "drag_data_get",
                                G_CALLBACK (matewnck_selector_drag_data_get),
                                G_OBJECT (window),
-                               0); 
+                               0);
 
       g_signal_connect_object (item, "drag_begin",
                                G_CALLBACK (matewnck_selector_drag_begin),
                                G_OBJECT (window),
-                               0); 
+                               0);
     }
 
   return item;
@@ -775,7 +777,7 @@ matewnck_selector_insert_window (MatewnckSelector *selector, MatewnckWindow *win
       gtk_menu_shell_insert (GTK_MENU_SHELL (selector->priv->menu),
                              item, i);
     }
-  else 
+  else
     {
       workspace_n = matewnck_workspace_get_number (workspace);
 
@@ -1089,7 +1091,7 @@ matewnck_selector_scroll_cb (MatewnckSelector *selector,
 
       previous_window = window;
     }
-  
+
   return TRUE;
 }
 

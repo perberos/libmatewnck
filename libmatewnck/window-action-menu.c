@@ -380,7 +380,7 @@ set_item_stock (GtkWidget  *mi,
 
   if (image == NULL)
     {
-      image = gtk_image_new_from_stock (stock_id, GTK_ICON_SIZE_MENU);
+      image = gtk_image_new_from_icon_name (stock_id, GTK_ICON_SIZE_MENU);
       gtk_widget_show (image);
       gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (mi), image);
     }
@@ -830,7 +830,7 @@ refill_submenu_workspace (MatewnckActionMenu *menu)
     {
       char      *name;
       GtkWidget *item;
-	
+
       name = get_workspace_name_with_accel (menu->priv->window, i);
 
       item = make_menu_item (MOVE_TO_WORKSPACE);
